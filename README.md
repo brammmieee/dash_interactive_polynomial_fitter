@@ -38,3 +38,15 @@ python app.py
 The screenshot below displays the dashboard with the interactive polynomial fitting tool. The tool for drawing the polynomial is annotated in the image. All zooming and drawing tools are fully functional.
 
 ![Image](./assets/screenshot.png)
+
+## Downscaling Functionality
+
+The app includes a downscaling feature to address issues with polynomial fitting on small numbers. When dealing with very small values, fitting can become inaccurate. By scaling down the polynomial fit by a specified factor, you can improve accuracy and visualization.
+
+### How to Use
+
+1. **Enter Scaling Factor**: Use the input box to specify a scaling factor. This factor will scale down both the x and y values of the polynomial fit.
+
+2. **Impact**: The polynomial fitting results and the displayed polynomial equation will reflect this scaling, helping to achieve more accurate results when working with small datasets.
+
+This feature helps ensure better fitting accuracy and visualization across different scales.
