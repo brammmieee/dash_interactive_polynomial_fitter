@@ -11,7 +11,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 fig = go.Figure()
 fig.update_layout(
     dragmode="drawopenpath",
-    xaxis=dict(range=[-10, 110]),
+    xaxis=dict(range=[-0.1, 1.1]),
     yaxis=dict(range=[-110, 110])
 )
 config = {
@@ -68,9 +68,10 @@ def polynomial_to_string(poly, scale_factor):
     for i, coeff in enumerate(poly.coefficients):
         if coeff == 0:
             continue
+        coeff = coeff*(scale_factor**(degree - i))
         term = f"{coeff:.6f}"
         if degree - i > 0:
-            term += f"*({scale_factor}*x)^{degree - i}"
+            term += f"*x**{degree - i}"
         terms.append(term)
     
     # Join terms with + or - signs
@@ -78,7 +79,7 @@ def polynomial_to_string(poly, scale_factor):
     if poly_str.startswith("- "):
         poly_str = poly_str[2:]  # Remove leading "- " if present
     
-    return f"Polynomial: {poly_str}"
+    return f"{poly_str}"
 
 @app.callback(
     Output("graph", "figure"),
@@ -131,11 +132,6 @@ def on_new_annotation(relayout_data, degree, scaling_factor):
     fig = go.Figure()
     fig.add_scatter(x=x_points, y=y_points, mode='markers', name='Drawn Points')
     fig.add_scatter(x=x_fit_scaled, y=y_fit_scaled, mode='lines', name=f'Polynomial Fit (degree {degree})')
-    fig.update_layout(
-        dragmode="drawopenpath",
-        xaxis=dict(range=[-10, 110]),
-        yaxis=dict(range=[-110, 110])
-    )
     
     return fig, poly_str
 
