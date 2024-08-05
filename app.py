@@ -55,33 +55,30 @@ def fit_polynomial(x, y, degree):
     p = np.polyfit(x, y, degree)
     return np.poly1d(p)
 
-def polynomial_to_string(poly, scaling_factor):
-    """Convert a polynomial object to a string with high accuracy, including scaling factor."""
+def polynomial_to_string(poly, scale_factor):
+    """
+    Create a string representation of the polynomial with scaling factor applied to coefficients.
+    """
+    # Scale the coefficients vertically
+    poly = (1/scale_factor) * poly
+    
+    # Build polynomial string
     terms = []
-    degree = poly.order
+    degree = len(poly.coefficients) - 1
     for i, coeff in enumerate(poly.coefficients):
-        if abs(coeff) < 1e-10:  # Filter out terms with very small coefficients
+        if coeff == 0:
             continue
-        power = degree - i
-        term = f"{coeff:.5f}"
-        if power > 0:
-            term += f"x^{power}"
+        term = f"{coeff:.6f}"
+        if degree - i > 0:
+            term += f"*({scale_factor}*x)^{degree - i}"
         terms.append(term)
     
-    # Join terms with correct signs
-    polynomial_str = ""
-    for term in terms:
-        if polynomial_str:
-            if term.startswith("-"):
-                polynomial_str += " - " + term[1:]
-            else:
-                polynomial_str += " + " + term
-        else:
-            polynomial_str = term
+    # Join terms with + or - signs
+    poly_str = " + ".join(terms).replace("+ -", "- ")
+    if poly_str.startswith("- "):
+        poly_str = poly_str[2:]  # Remove leading "- " if present
     
-    # Include scaling factor in description
-    scaling_info = f" (scaled by 1/{scaling_factor:.2f})" if scaling_factor != 1 else ""
-    return f"Polynomial: {polynomial_str}{scaling_info}"
+    return f"Polynomial: {poly_str}"
 
 @app.callback(
     Output("graph", "figure"),
